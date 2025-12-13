@@ -1,0 +1,20 @@
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - api
+
+  api:
+    build:
+      context: ./backend
+    command: bundle exec puma -C config/puma.rb
+    expose:
+      - "3000"
+    volumes:
+      - ./backend:/app
+    tty: true
+    stdin_open: true
