@@ -5,14 +5,14 @@ services:
     env_file:
       - ./backend/.env.local
     command: bundle exec puma -C config/puma.rb
-<<<<<<< HEAD
+
     ports:
       - "3000:3000"
     volumes:
       - ./backend:/app
     tty: true
     stdin_open: true
-=======
+
     expose:
       - "3000"
     volumes:
@@ -29,4 +29,4 @@ services:
       - ./frontend/dist:/usr/share/nginx/html:ro
     depends_on:
       - api
->>>>>>> develop
+      
