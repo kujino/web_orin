@@ -36,3 +36,57 @@ html, body { margin: 0; padding: 0; }
     display: block;
   }
 }
+
+.ring-button {
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+
+  position: fixed;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+
+  background: linear-gradient(145deg, #5a5555, #1f1f1f);
+
+  border: 1px solid #555;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.6),
+    inset 0 2px 4px rgba(255, 255, 255, 0.1);
+
+  cursor: pointer;
+  user-select: none;
+
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
+}
+
+.bell_button {
+  width: 50px;     
+  height: 50px;
+  pointer-events: none; 
+}
+
+@media (min-width: 769px) {
+  .ring-button {
+    top: 50%;
+    bottom: auto;
+    transform: translate(-50%, -2%);
+  }
+}
+
+.ring-button:active {
+  transform: translate(-50%, 2%);
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.6),
+    inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+

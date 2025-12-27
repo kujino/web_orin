@@ -1,7 +1,12 @@
 import React from 'react';
-import './App.css';
 
 function App() {
+  const playSound = () => {
+    const audio = new Audio("/orin-sound.mp3");
+    audio.currentTime = 0;
+    audio.play();
+  };
+
   return (
     <div className="container">
       <img
@@ -14,6 +19,16 @@ function App() {
         alt="お鈴（スマホ）"
         className="orin sp-only"
       />
+      <button
+        onClick={playSound}
+        className="ring-button"
+      >
+        <img 
+          src="/bell-button02.png"
+          alt="bell_button"
+          className="bell_button"
+        />
+      </button>
     </div>
   );
 }
