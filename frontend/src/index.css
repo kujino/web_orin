@@ -1,3 +1,38 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html, body { margin: 0; padding: 0; }
+
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* 共通 */
+.orin {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* デフォルト：PC表示 */
+.pc-only {
+  display: block;
+}
+.sp-only {
+  display: none;
+}
+
+/* スマホ */
+@media (max-width: 768px) {
+  .pc-only {
+    display: none;
+  }
+  .sp-only {
+    display: block;
+  }
+}
