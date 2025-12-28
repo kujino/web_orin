@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import Header from './components/Header';
-import SideMenu from './components/SideMenu'
+import SideMenu from './components/SideMenu';
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<"about" | "comment" | null>(null);
 
   const playSound = () => {
     const audio = new Audio("/orin-sound.mp3");
@@ -11,13 +12,25 @@ function App() {
     audio.play();
   };
 
+  useEffect(() => {
+    if (!menuOpen) {
+      setActiveSection(null);
+    }
+  }, [menuOpen]);
+
   return (
     <>
       <Header
         menuOpen={menuOpen}
         setMenuOpen={setMenuOpen}
       />
-      < SideMenu open={menuOpen} />
+
+      <SideMenu
+        open={menuOpen}
+        activeSection={activeSection}
+        setActiveSection={setActiveSection}
+      />
+
       <main className="container">
         <img
           src="/orin02.png"
@@ -33,7 +46,7 @@ function App() {
           onClick={playSound}
           className="ring-button"
         >
-          <img 
+          <img
             src="/bell-button02.png"
             alt="bell_button"
             className="bell_button"
