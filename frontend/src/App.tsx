@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Header from './components/Header';
+import SideMenu from './components/SideMenu'
 
 function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const playSound = () => {
     const audio = new Audio("/orin-sound.mp3");
     audio.currentTime = 0;
@@ -10,7 +13,11 @@ function App() {
 
   return (
     <>
-      <Header />
+      <Header
+        menuOpen={menuOpen}
+        setMenuOpen={setMenuOpen}
+      />
+      < SideMenu open={menuOpen} />
       <main className="container">
         <img
           src="/orin02.png"

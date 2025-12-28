@@ -1,8 +1,17 @@
 import './Header.css';
 
-const Header = () => {
+type Props = {
+  menuOpen: boolean;
+  setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const Header = ({ menuOpen, setMenuOpen }: Props) => {
   return (
-    <button className="menu-button" aria-label="menu">
+    <button
+      className="menu-button"
+      onClick={() => setMenuOpen(prev => !prev)}
+      aria-label="menu"
+    >
       <img
         src="/menu.png"
         alt="メニューボタン"
