@@ -35,9 +35,9 @@ const SideMenu = ({
       <div className="menu-content">
         {activeSection === "about" && (
           <div>
-            <h3>WebOrinについて</h3>
+            <h3>About</h3>
             <p>
-              WebOrinは、いつ、どこでもお鈴を鳴らせるWebアプリです。
+              Web Orinは、いつ、どこでもお鈴を鳴らせるWebアプリです。
             </p>
             <p>
               効果音：   
