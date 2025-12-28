@@ -1,4 +1,5 @@
 import React from 'react';
+import Header from './components/Header';
 
 function App() {
   const playSound = () => {
@@ -8,28 +9,31 @@ function App() {
   };
 
   return (
-    <div className="container">
-      <img
-        src="/orin02.png"
-        alt="お鈴（PC）"
-        className="orin pc-only"
-      />
-      <img
-        src="/orin-sp.png"
-        alt="お鈴（スマホ）"
-        className="orin sp-only"
-      />
-      <button
-        onClick={playSound}
-        className="ring-button"
-      >
-        <img 
-          src="/bell-button02.png"
-          alt="bell_button"
-          className="bell_button"
+    <>
+      <Header />
+      <main className="container">
+        <img
+          src="/orin02.png"
+          alt="お鈴（PC）"
+          className="orin pc-only"
         />
-      </button>
-    </div>
+        <img
+          src="/orin-sp.png"
+          alt="お鈴（スマホ）"
+          className="orin sp-only"
+        />
+        <button
+          onClick={playSound}
+          className="ring-button"
+        >
+          <img 
+            src="/bell-button02.png"
+            alt="bell_button"
+            className="bell_button"
+          />
+        </button>
+      </main>
+    </>
   );
 }
 
