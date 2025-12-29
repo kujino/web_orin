@@ -7,6 +7,10 @@ Rails.application.routes.draw do
 
   get "/api/health", to: proc { [200, { "Content-Type" => "text/plain" }, ["ok"]] }
 
+  scope :api do
+    resources :comments, only: [ :index, :create ]
+  end
+
   # Defines the root path route ("/")
   # root "posts#index"
 end
