@@ -1,0 +1,10 @@
+.comments-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.comment-error {
+  color: red;
+  font-size: 12px;
+}
