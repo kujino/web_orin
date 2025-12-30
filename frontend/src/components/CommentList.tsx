@@ -11,13 +11,15 @@ const CommentList = ({ comments }: Props) => {
   }
 
   return (
-    <ul className="comment-list">
-      {comments.map((c) => (
-        <li key={c.id} className="comment-item">
-          {c.body}
-        </li>
-      ))}
-    </ul>
+    <div className="comment-scroll-area">
+      <ul className="comment-list">
+        {comments.map((c) => (
+          <li key={c.id} className="comment-item">
+            {c.body}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 
