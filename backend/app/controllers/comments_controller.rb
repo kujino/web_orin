@@ -1,12 +1,16 @@
 class CommentsController < ApplicationController
   def index
-    comments = Comment.all
+    comments = Comment.all.order(created_at: :desc)
     render json: comments
   end
 
   def create
     comment = Comment.new(comment_params)
-    render json: comment, status: :created
+    if comment.save
+      render json: comment, status: :created
+    else
+      render json: { errors: comment.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   private

@@ -1,0 +1,54 @@
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* テキストエリア */
+.comment-input {
+  resize: none;
+  padding: 10px 12px;
+  font-size: 14px;
+  line-height: 1.5;
+
+  border: 1px solid #ccc;
+  border-radius: 12px; /* ← 丸さの主役 */
+
+  background-color: #fafafa;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.comment-input:focus {
+  outline: none;
+  border-color: #888;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+}
+
+/* 送信ボタン */
+.comment-submit {
+  padding: 8px 0;
+  font-size: 14px;
+
+  border: none;
+  border-radius: 9999px; /* ← 完全に丸く */
+  cursor: pointer;
+
+  background-color: #545454;
+  color: #fff;
+
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.comment-submit:hover {
+  opacity: 0.9;
+}
+
+.comment-submit:active {
+  transform: scale(0.97);
+}
+
+.comment-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

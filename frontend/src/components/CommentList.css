@@ -1,0 +1,32 @@
+.comment-list {
+  flex: 1;              
+  overflow-y: auto;
+  padding-right: 4px;
+  max-height: 60vh;
+}
+
+@media (max-width: 768px) {
+  .comment-list {
+    max-height: 45vh;
+  }
+
+}
+
+.comment-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+
+  padding-top: 30px;
+  padding-bottom: 16px;
+}
+
+.comment-item {
+  padding: 6px 4px;
+  border-bottom: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.comment-empty {
+  font-size: 13px;
+  color: #666;
+}

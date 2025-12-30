@@ -1,4 +1,5 @@
 import "./SideMenu.css";
+import CommentsPanel from "./CommentsPanel";
 
 type Props = {
   open: boolean;
@@ -54,11 +55,7 @@ const SideMenu = ({
           </div>
         )}
 
-        {activeSection === "comment" && (
-          <div>
-            <p>（ここにコメント機能予定）</p>
-          </div>
-        )}
+        {activeSection === "comment" && <CommentsPanel />}
       </div>
     </aside>
   );
