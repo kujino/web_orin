@@ -6,7 +6,11 @@ class CommentsController < ApplicationController
 
   def create
     comment = Comment.new(comment_params)
-    render json: comment, status: :created
+    if comment.save
+      render json: comment, status: :created
+    else
+      render json: { errors: comment.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   private
