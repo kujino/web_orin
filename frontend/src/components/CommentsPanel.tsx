@@ -6,12 +6,22 @@ import CommentList from "./CommentList";
 const CommentsPanel = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
+
     fetch("/api/comments")
       .then((res) => res.json())
-      .then(setComments)
-      .catch(() => setError("コメントの取得に失敗しました"));
+      .then((data) => {
+        setComments(data);
+      })
+      .catch(() => {
+        setError("コメントの取得に失敗しました");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   const addComment = (comment: Comment) => {
@@ -29,7 +39,11 @@ const CommentsPanel = () => {
 
       {error && <p className="comment-error">{error}</p>}
 
-      <CommentList comments={comments} />
+      {loading ? (
+        <p>読み込み中...</p>
+      ) : (
+        <CommentList comments={comments} />
+      )}
     </div>
   );
 };
