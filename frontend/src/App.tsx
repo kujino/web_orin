@@ -6,10 +6,33 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<"about" | "comment" | null>(null);
 
+  const [bellCount, setBellCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/api/bell_rings")
+      .then((res) => res.json())
+      .then((data) => setBellCount(data.count))
+      .catch(() => setBellCount(null));
+  }, []);
+
   const playSound = () => {
     const audio = new Audio("/orin-sound.mp3");
     audio.currentTime = 0;
     audio.play();
+  };
+
+  const ringBell = async () => {
+    try {
+      const res = await fetch("/api/bell_rings", {
+        method: "POST",
+      });
+
+      if (!res.ok) throw new Error();
+
+      setBellCount((prev) => (prev ?? 0) + 1);
+    } catch {
+      console.error("bell ring failed");
+    }
   };
 
   useEffect(() => {
@@ -29,6 +52,7 @@ function App() {
         open={menuOpen}
         activeSection={activeSection}
         setActiveSection={setActiveSection}
+        bellCount={bellCount}
       />
 
       <main className="container">
@@ -43,7 +67,10 @@ function App() {
           className="orin sp-only"
         />
         <button
-          onClick={playSound}
+          onClick={async () => {
+            playSound();
+            await ringBell();
+          }}
           className="ring-button"
         >
           <img

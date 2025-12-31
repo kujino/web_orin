@@ -9,6 +9,7 @@ Rails.application.routes.draw do
 
   scope :api do
     resources :comments, only: [ :index, :create ]
+    resources :bell_rings, only: [ :index, :create ]
   end
 
   # Defines the root path route ("/")
