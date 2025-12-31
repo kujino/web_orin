@@ -1,61 +1,57 @@
 import "./SideMenu.css";
-import CommentsPanel from "./CommentsPanel";
+import SideMenuContent from "./SideMenuContent";
 
 type Props = {
   open: boolean;
   activeSection: "about" | "comment" | null;
-  setActiveSection: (section: "about" | "comment") => void;
+  setActiveSection: React.Dispatch<
+    React.SetStateAction<"about" | "comment" | null>
+  >;
+  bellCount: number | null;
 };
-
 
 const SideMenu = ({
   open,
   activeSection,
   setActiveSection,
+  bellCount,
 }: Props) => {
   if (!open) return null;
+
+  // ★ 追加：トグル用ハンドラ
+  const handleToggle = (section: "about" | "comment") => {
+    setActiveSection((prev) => (prev === section ? null : section));
+  };
 
   return (
     <aside className="side-menu open">
       <ul>
         <h1 className="app-title">Web Orin</h1>
+
         <li>
-          <button className="menu-link"
-            onClick={() => setActiveSection("about")}>
-              当アプリについて
+          <button
+            className="menu-link"
+            onClick={() => handleToggle("about")}
+          >
+            当アプリについて
           </button>
         </li>
+
         <li>
-          <button className="menu-link"
-            onClick={() => setActiveSection("comment")}>
-              コメント
+          <button
+            className="menu-link"
+            onClick={() => handleToggle("comment")}
+          >
+            コメント
           </button>
         </li>
       </ul>
 
       <div className="menu-content">
-        {activeSection === "about" && (
-          <div>
-            <h3>About</h3>
-            <p>
-              Web Orinは、いつ、どこでもお鈴を鳴らせるWebアプリです。
-            </p>
-            <p>
-              効果音：   
-              <a
-                href="https://otologic.jp/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                OtoLogic
-              </a>
-                &nbsp; 様
-            </p>
-
-          </div>
-        )}
-
-        {activeSection === "comment" && <CommentsPanel />}
+        <SideMenuContent
+          activeSection={activeSection}
+          bellCount={bellCount}
+        />
       </div>
     </aside>
   );
