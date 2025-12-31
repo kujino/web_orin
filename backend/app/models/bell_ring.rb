@@ -1,0 +1,2 @@
+class BellRing < ApplicationRecord
+end
