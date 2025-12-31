@@ -29,6 +29,9 @@
 }
 
 .menu-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background: none;
   border: none;
   padding: 0;
@@ -43,6 +46,22 @@
 
 .menu-link:hover {
   opacity: 0.6;
+}
+
+.menu-arrow {
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin-left: 3px;
+  flex-shrink: 0;
+
+  transform: rotate(0deg);
+  transition: transform 0.25s ease;
+  transform-origin: center;
+}
+
+.menu-arrow--open {
+  transform: rotate(90deg);
 }
 
 .side-menu ul {
