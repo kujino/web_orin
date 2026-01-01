@@ -8,8 +8,10 @@ function App() {
 
   const [bellCount, setBellCount] = useState<number | null>(null);
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   useEffect(() => {
-    fetch("/api/bell_rings")
+    fetch(`${API_BASE_URL}/api/bell_rings`)
       .then((res) => res.json())
       .then((data) => setBellCount(data.count))
       .catch(() => setBellCount(null));
@@ -23,7 +25,7 @@ function App() {
 
   const ringBell = async () => {
     try {
-      const res = await fetch("/api/bell_rings", {
+      const res = await fetch(`${API_BASE_URL}/api/bell_rings`, {
         method: "POST",
       });
 

@@ -7,6 +7,8 @@ type Props = {
   onError: (message: string) => void;
 };
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const CommentForm = ({ onSuccess, onError }: Props) => {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,7 +20,7 @@ const CommentForm = ({ onSuccess, onError }: Props) => {
     onError("");
 
     try {
-      const res = await fetch("/api/comments", {
+      const res = await fetch(`${API_BASE_URL}/api/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
