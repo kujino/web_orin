@@ -34,15 +34,11 @@ const SideMenu = ({
             onClick={() => handleToggle("about")}
           >
             <span className="menu-text">当アプリについて</span>
-              <img
-                src="/arrow03.png"
-                alt=""
-                className={`menu-arrow ${
-                  activeSection === "about" ? "menu-arrow--open" : ""
-                }`}
-              />
-          </button>
 
+            {activeSection === "about" && (
+              <span className="menu-toggle">−</span>
+            )}
+          </button>
         </li>
 
         <li>
@@ -50,14 +46,11 @@ const SideMenu = ({
             className="menu-link"
             onClick={() => handleToggle("comment")}
           >
-            コメント
-              <img
-                src="/arrow03.png"
-                alt=""
-                className={`menu-arrow ${
-                activeSection === "comment" ? "menu-arrow--open" : ""
-                }`}
-              />
+            <span className="menu-text">コメント</span>
+
+            {activeSection === "comment" && (
+              <span className="menu-toggle">−</span>
+            )}
           </button>
         </li>
       </ul>
