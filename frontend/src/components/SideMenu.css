@@ -48,20 +48,14 @@
   opacity: 0.6;
 }
 
-.menu-arrow {
-  display: block;
-  width: 18px;
-  height: 18px;
-  margin-left: 3px;
-  flex-shrink: 0;
-
-  transform: rotate(0deg);
-  transition: transform 0.25s ease;
-  transform-origin: center;
-}
-
-.menu-arrow--open {
-  transform: rotate(90deg);
+.menu-toggle {
+  transform: translateY(2px);
+  width: 16px;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0 2px;
+  color: #838383;
 }
 
 .side-menu ul {
