@@ -5,7 +5,7 @@ type Props = {
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Header = ({ menuOpen, setMenuOpen }: Props) => {
+const Header = ({ setMenuOpen }: Props) => {
   return (
     <button
       className="menu-button"
