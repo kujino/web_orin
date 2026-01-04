@@ -65,7 +65,7 @@
 }
 
 .side-menu li {
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .side-menu a {
@@ -83,4 +83,45 @@
 }
 .side-menu a:hover {
   opacity: 0.7;
+}
+
+.side-menu .x-share-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  
+  margin: 5px;
+  padding: 8px 20px;
+
+  background-color: #000;
+  color: #fff;
+  text-decoration: none;
+
+  border-radius: 0px; 
+  font-size: 12px;
+  font-weight: 600;
+
+  transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.x-share-button:hover {
+  opacity: 0.8;
+}
+
+.x-share-button:active {
+  transform: scale(0.98);
+}
+
+.x-icon {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.x-text {
+  white-space: nowrap;
+}
+
+.share-item {
+  text-align: center;
 }
