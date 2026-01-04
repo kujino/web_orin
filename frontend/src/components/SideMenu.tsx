@@ -18,10 +18,18 @@ const SideMenu = ({
 }: Props) => {
   if (!open) return null;
 
-  // ★ 追加：トグル用ハンドラ
   const handleToggle = (section: "about" | "comment") => {
     setActiveSection((prev) => (prev === section ? null : section));
   };
+
+const shareText = encodeURIComponent(
+  "Web Orin｜ワンタップでお鈴を鳴らせるWebアプリ"
+);
+const shareUrl = encodeURIComponent("https://web-orin.vercel.app");
+const hashtags = encodeURIComponent("webでチーン");
+
+const xShareUrl =
+  `https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}&hashtags=${hashtags}`;
 
   return (
     <aside className="side-menu open">
@@ -52,6 +60,18 @@ const SideMenu = ({
               <span className="menu-toggle">−</span>
             )}
           </button>
+        </li>
+
+        <li className="share-item">
+          <a
+            href={xShareUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="x-share-button"
+          >
+            <span className="x-icon">𝕏</span>
+            <span className="x-text">でシェア</span>
+          </a>
         </li>
       </ul>
 
