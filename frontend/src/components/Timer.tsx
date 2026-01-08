@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import "./Timer.css"
 
 type TimerProps = {
   onFinish?: () => void;
@@ -81,41 +82,53 @@ const Timer = ({ onFinish }: TimerProps) => {
   };
 
   return (
-    <div>
-      <h2>タイマー</h2>
+    <div className="timer">
+      <h3>Timer</h3>
 
-
-      <label style={{ display: "block", marginBottom: "4px" }}>
-        時間：<strong>{minutes} 分</strong>
+      <label className="timer-label">
+        設定時間：<strong>{minutes} 分</strong>
       </label>
+    
+      <div className="timer-select-wrapper">
+        <select
+          className="timer-select"
+          value={minutes}
+          onChange={(e) => setMinutes(Number(e.target.value))}
+          disabled={running && !paused}
+        >
+          {Array.from({ length: 60 }, (_, i) => i + 1).map((min) => (
+            <option key={min} value={min}>
+              {min}
+            </option>
+          ))}
+        </select>
+      </div>
 
-
-      <select
-        value={minutes}
-        onChange={(e) => setMinutes(Number(e.target.value))}
-        disabled={running && !paused}
-        style={{
-          width: "100%",
-          padding: "6px",
-          marginBottom: "12px",
-        }}
-      >
-        {Array.from({ length: 60 }, (_, i) => i + 1).map((min) => (
-          <option key={min} value={min}>
-            {min}
-          </option>
-        ))}
-      </select>
-
-      <div style={{ fontSize: "24px", marginBottom: "12px" }}>
+      <div className="timer-remaining">
         {running ? format(remaining) : format(minutes * 60)}
       </div>
 
-      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-        {!running && <button onClick={start}>開始</button>}
-        {running && !paused && <button onClick={pause}>一時停止</button>}
-        {running && paused && <button onClick={resume}>再開</button>}
-        {running && <button onClick={stop}>終了</button>}
+      <div className="timer-buttons">
+        {!running && (
+          <button className="timer-button" onClick={start}>
+            開始
+          </button>
+        )}
+        {running && !paused && (
+          <button className="timer-button" onClick={pause}>
+            一時停止
+          </button>
+        )}
+        {running && paused && (
+          <button className="timer-button" onClick={resume}>
+            再開
+          </button>
+        )}
+        {running && (
+          <button className="timer-button" onClick={stop}>
+            終了
+          </button>
+        )}
       </div>
     </div>
   );
