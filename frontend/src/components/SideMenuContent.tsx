@@ -1,16 +1,15 @@
 import CommentsPanel from "./CommentsPanel";
 import BellCountPanel from "./BellCountPanel.tsx";
+import Timer from "./Timer.tsx";
 
 
 type Props = {
-  activeSection: "about" | "comment" | null;
+  activeSection: "about" | "comment" | "timer" | null;
   bellCount: number | null;
+  onTimerFinish: () => void;
 };
 
-const SideMenuContent = ({ activeSection, bellCount }: Props) => {
-  if (activeSection === "comment") {
-    return <CommentsPanel />;
-  }
+const SideMenuContent = ({ activeSection, bellCount,onTimerFinish }: Props) => {
 
   if (activeSection === "about") {
     return (
@@ -31,6 +30,15 @@ const SideMenuContent = ({ activeSection, bellCount }: Props) => {
       </div>
     );
   }
+
+  if (activeSection === "comment") {
+    return <CommentsPanel />;
+  }
+
+if (activeSection === "timer") {
+  return <Timer onFinish={onTimerFinish} />;
+}
+
 
   return <BellCountPanel count={bellCount} />;
 };

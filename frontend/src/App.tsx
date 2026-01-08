@@ -4,7 +4,7 @@ import SideMenu from './components/SideMenu';
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState<"about" | "comment" | null>(null);
+  const [activeSection, setActiveSection] = useState<"about" | "comment" | "timer" | null>(null);
 
   const [bellCount, setBellCount] = useState<number | null>(null);
 
