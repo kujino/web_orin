@@ -5,11 +5,11 @@ type TimerProps = {
 };
 
 const Timer = ({ onFinish }: TimerProps) => {
-
   const [minutes, setMinutes] = useState(1);
   const [remaining, setRemaining] = useState(0);
   const [running, setRunning] = useState(false);
   const [paused, setPaused] = useState(false);
+
   const startTimeRef = useRef<number | null>(null);
   const pausedAtRef = useRef<number | null>(null);
 
@@ -73,6 +73,7 @@ const Timer = ({ onFinish }: TimerProps) => {
     pausedAtRef.current = null;
   };
 
+
   const format = (sec: number) => {
     const m = Math.floor(sec / 60);
     const s = sec % 60;
@@ -81,22 +82,30 @@ const Timer = ({ onFinish }: TimerProps) => {
 
   return (
     <div>
-      <h2>Timer</h2>
+      <h2>タイマー</h2>
+
 
       <label style={{ display: "block", marginBottom: "4px" }}>
         時間：<strong>{minutes} 分</strong>
       </label>
 
-      <input
-        type="range"
-        min={1}
-        max={60}
-        step={1}
+
+      <select
         value={minutes}
         onChange={(e) => setMinutes(Number(e.target.value))}
         disabled={running && !paused}
-        style={{ width: "100%", marginBottom: "12px" }}
-      />
+        style={{
+          width: "100%",
+          padding: "6px",
+          marginBottom: "12px",
+        }}
+      >
+        {Array.from({ length: 60 }, (_, i) => i + 1).map((min) => (
+          <option key={min} value={min}>
+            {min}
+          </option>
+        ))}
+      </select>
 
       <div style={{ fontSize: "24px", marginBottom: "12px" }}>
         {running ? format(remaining) : format(minutes * 60)}
@@ -113,3 +122,4 @@ const Timer = ({ onFinish }: TimerProps) => {
 };
 
 export default Timer;
+
