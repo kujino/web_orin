@@ -22,22 +22,17 @@ const Timer = ({ onFinish }: TimerProps) => {
 
     if (!audioRef.current) {
       audioRef.current = new Audio("/orin-sound.mp3");
+      audioRef.current.volume = 0;
     }
-
-    audioRef.current.muted = true;
 
     audioRef.current
       .play()
       .then(() => {
         audioRef.current?.pause();
-        if (audioRef.current) {
-          audioRef.current.currentTime = 0;
-          audioRef.current.muted = false;
-        }
+        audioRef.current!.currentTime = 0;
         audioUnlockedRef.current = true;
       })
-      .catch(() => {
-      });
+      .catch(() => {});
   };
 
   useEffect(() => {
@@ -49,7 +44,6 @@ const Timer = ({ onFinish }: TimerProps) => {
       const elapsed = Math.floor(
         (Date.now() - startTimeRef.current) / 1000
       );
-
       const next = minutes * 60 - elapsed;
 
       if (next <= 0) {
@@ -60,7 +54,11 @@ const Timer = ({ onFinish }: TimerProps) => {
         startTimeRef.current = null;
         pausedAtRef.current = null;
 
-        audioRef.current?.play();
+        if (audioRef.current) {
+          audioRef.current.volume = 1;
+          audioRef.current.currentTime = 0;
+          audioRef.current.play().catch(() => {});
+        }
 
         onFinish?.();
       } else {
@@ -115,8 +113,8 @@ const Timer = ({ onFinish }: TimerProps) => {
     <div className="timer">
       <h3>Timer</h3>
 
-      <p>
-        ※ タイマー使用中はスリープ対策が必要です
+      <p className="timer-notice">
+        ※ タイマー使用中は画面を表示したままにしてください
       </p>
 
       <label className="timer-label">
