@@ -14,25 +14,34 @@ const Timer = ({ onFinish }: TimerProps) => {
   const startTimeRef = useRef<number | null>(null);
   const pausedAtRef = useRef<number | null>(null);
 
+  /** 🔔 Audio 用 */
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUnlockedRef = useRef(false);
 
+  /** iOS Safari 用：ユーザー操作内で音を解錠 */
   const unlockAudio = () => {
     if (audioUnlockedRef.current) return;
 
     if (!audioRef.current) {
       audioRef.current = new Audio("/orin-sound.mp3");
-      audioRef.current.volume = 0;
     }
+
+    // iOS は muted 再生だと通りやすい
+    audioRef.current.muted = true;
 
     audioRef.current
       .play()
       .then(() => {
         audioRef.current?.pause();
-        audioRef.current!.currentTime = 0;
+        if (audioRef.current) {
+          audioRef.current.currentTime = 0;
+          audioRef.current.muted = false;
+        }
         audioUnlockedRef.current = true;
       })
-      .catch(() => {});
+      .catch(() => {
+        // 失敗してもOK（iOSではよくある）
+      });
   };
 
   useEffect(() => {
@@ -44,6 +53,7 @@ const Timer = ({ onFinish }: TimerProps) => {
       const elapsed = Math.floor(
         (Date.now() - startTimeRef.current) / 1000
       );
+
       const next = minutes * 60 - elapsed;
 
       if (next <= 0) {
@@ -54,11 +64,8 @@ const Timer = ({ onFinish }: TimerProps) => {
         startTimeRef.current = null;
         pausedAtRef.current = null;
 
-        if (audioRef.current) {
-          audioRef.current.volume = 1;
-          audioRef.current.currentTime = 0;
-          audioRef.current.play().catch(() => {});
-        }
+        /** 🔔 タイマー終了時に鳴らす */
+        audioRef.current?.play();
 
         onFinish?.();
       } else {
@@ -70,6 +77,7 @@ const Timer = ({ onFinish }: TimerProps) => {
   }, [running, paused, minutes, onFinish]);
 
   const start = () => {
+    /** ★ 必ずユーザー操作内で呼ぶ */
     unlockAudio();
 
     setRemaining(minutes * 60);
@@ -113,7 +121,7 @@ const Timer = ({ onFinish }: TimerProps) => {
     <div className="timer">
       <h3>Timer</h3>
 
-      <p className="timer-notice">
+      <p>
         ※ タイマー使用中は画面を表示したままにしてください
       </p>
 
