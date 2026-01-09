@@ -6,13 +6,13 @@
 
 .timer-select {
   width: 100%;
-  padding: 8px 36px 8px 10px; /* 右は▼分の余白 */
+  padding: 8px 36px 8px 10px;
   font-size: 14px;
   border-radius: 6px;
   border: 1px solid #cfcac2;
   background-color: #f7f6f4;
   color: #333;
-  appearance: none;          /* デフォルト矢印を消す */
+  appearance: none;
   -webkit-appearance: none;
   cursor: pointer;
 }

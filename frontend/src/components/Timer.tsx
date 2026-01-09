@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import "./Timer.css"
+import "./Timer.css";
 
 type TimerProps = {
   onFinish?: () => void;
@@ -13,6 +13,36 @@ const Timer = ({ onFinish }: TimerProps) => {
 
   const startTimeRef = useRef<number | null>(null);
   const pausedAtRef = useRef<number | null>(null);
+
+  /** 🔔 Audio 用 */
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioUnlockedRef = useRef(false);
+
+  /** iOS Safari 用：ユーザー操作内で音を解錠 */
+  const unlockAudio = () => {
+    if (audioUnlockedRef.current) return;
+
+    if (!audioRef.current) {
+      audioRef.current = new Audio("/orin-sound.mp3");
+    }
+
+    // iOS は muted 再生だと通りやすい
+    audioRef.current.muted = true;
+
+    audioRef.current
+      .play()
+      .then(() => {
+        audioRef.current?.pause();
+        if (audioRef.current) {
+          audioRef.current.currentTime = 0;
+          audioRef.current.muted = false;
+        }
+        audioUnlockedRef.current = true;
+      })
+      .catch(() => {
+        // 失敗してもOK（iOSではよくある）
+      });
+  };
 
   useEffect(() => {
     if (!running || paused) return;
@@ -33,6 +63,10 @@ const Timer = ({ onFinish }: TimerProps) => {
         setPaused(false);
         startTimeRef.current = null;
         pausedAtRef.current = null;
+
+        /** 🔔 タイマー終了時に鳴らす */
+        audioRef.current?.play();
+
         onFinish?.();
       } else {
         setRemaining(next);
@@ -43,6 +77,9 @@ const Timer = ({ onFinish }: TimerProps) => {
   }, [running, paused, minutes, onFinish]);
 
   const start = () => {
+    /** ★ 必ずユーザー操作内で呼ぶ */
+    unlockAudio();
+
     setRemaining(minutes * 60);
     setRunning(true);
     setPaused(false);
@@ -74,7 +111,6 @@ const Timer = ({ onFinish }: TimerProps) => {
     pausedAtRef.current = null;
   };
 
-
   const format = (sec: number) => {
     const m = Math.floor(sec / 60);
     const s = sec % 60;
@@ -88,7 +124,7 @@ const Timer = ({ onFinish }: TimerProps) => {
       <label className="timer-label">
         設定時間：<strong>{minutes} 分</strong>
       </label>
-    
+
       <div className="timer-select-wrapper">
         <select
           className="timer-select"
@@ -135,4 +171,3 @@ const Timer = ({ onFinish }: TimerProps) => {
 };
 
 export default Timer;
-
