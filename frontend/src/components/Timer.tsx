@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import NoSleep from "nosleep.js";
 import "./Timer.css";
 
 type TimerProps = {
@@ -14,20 +15,17 @@ const Timer = ({ onFinish }: TimerProps) => {
   const startTimeRef = useRef<number | null>(null);
   const pausedAtRef = useRef<number | null>(null);
 
-  /** 🔔 Audio 用 */
+  const noSleepRef = useRef<NoSleep | null>(null);
+  if (!noSleepRef.current) {
+    noSleepRef.current = new NoSleep();
+  }
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const audioUnlockedRef = useRef(false);
 
-  /** iOS Safari 用：ユーザー操作内で音を解錠 */
   const unlockAudio = () => {
-    if (audioUnlockedRef.current) return;
-
     if (!audioRef.current) {
       audioRef.current = new Audio("/orin-sound.mp3");
     }
-
-    // iOS は muted 再生だと通りやすい
-    audioRef.current.muted = true;
 
     audioRef.current
       .play()
@@ -35,12 +33,9 @@ const Timer = ({ onFinish }: TimerProps) => {
         audioRef.current?.pause();
         if (audioRef.current) {
           audioRef.current.currentTime = 0;
-          audioRef.current.muted = false;
         }
-        audioUnlockedRef.current = true;
       })
       .catch(() => {
-        // 失敗してもOK（iOSではよくある）
       });
   };
 
@@ -64,7 +59,7 @@ const Timer = ({ onFinish }: TimerProps) => {
         startTimeRef.current = null;
         pausedAtRef.current = null;
 
-        /** 🔔 タイマー終了時に鳴らす */
+        noSleepRef.current?.disable();
         audioRef.current?.play();
 
         onFinish?.();
@@ -76,8 +71,8 @@ const Timer = ({ onFinish }: TimerProps) => {
     return () => clearInterval(id);
   }, [running, paused, minutes, onFinish]);
 
+
   const start = () => {
-    /** ★ 必ずユーザー操作内で呼ぶ */
     unlockAudio();
 
     setRemaining(minutes * 60);
@@ -85,6 +80,8 @@ const Timer = ({ onFinish }: TimerProps) => {
     setPaused(false);
     startTimeRef.current = Date.now();
     pausedAtRef.current = null;
+
+    noSleepRef.current?.enable();
   };
 
   const pause = () => {
@@ -101,6 +98,8 @@ const Timer = ({ onFinish }: TimerProps) => {
 
     setPaused(false);
     pausedAtRef.current = null;
+
+    noSleepRef.current?.enable();
   };
 
   const stop = () => {
@@ -109,6 +108,8 @@ const Timer = ({ onFinish }: TimerProps) => {
     setRemaining(0);
     startTimeRef.current = null;
     pausedAtRef.current = null;
+
+    noSleepRef.current?.disable();
   };
 
   const format = (sec: number) => {
