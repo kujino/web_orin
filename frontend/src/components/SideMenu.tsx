@@ -59,7 +59,7 @@ const SideMenu =  ({
             className="menu-link"
             onClick={() => handleToggle("timer")}
           >
-            <span className="menu-text">タイマー（試験中）</span>
+            <span className="menu-text">タイマー</span>
 
             {activeSection === "timer" && (
               <span className="menu-toggle">−</span>
