@@ -15,29 +15,11 @@ const Timer = ({ onFinish }: TimerProps) => {
   const startTimeRef = useRef<number | null>(null);
   const pausedAtRef = useRef<number | null>(null);
 
+  /** NoSleep インスタンス（1つだけ） */
   const noSleepRef = useRef<NoSleep | null>(null);
   if (!noSleepRef.current) {
     noSleepRef.current = new NoSleep();
   }
-
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  const unlockAudio = () => {
-    if (!audioRef.current) {
-      audioRef.current = new Audio("/orin-sound.mp3");
-    }
-
-    audioRef.current
-      .play()
-      .then(() => {
-        audioRef.current?.pause();
-        if (audioRef.current) {
-          audioRef.current.currentTime = 0;
-        }
-      })
-      .catch(() => {
-      });
-  };
 
   useEffect(() => {
     if (!running || paused) return;
@@ -59,8 +41,8 @@ const Timer = ({ onFinish }: TimerProps) => {
         startTimeRef.current = null;
         pausedAtRef.current = null;
 
+        /** ⏱ 完走時は NoSleep OFF */
         noSleepRef.current?.disable();
-        audioRef.current?.play();
 
         onFinish?.();
       } else {
@@ -71,16 +53,18 @@ const Timer = ({ onFinish }: TimerProps) => {
     return () => clearInterval(id);
   }, [running, paused, minutes, onFinish]);
 
+  /* =========================
+     操作系
+     ========================= */
 
   const start = () => {
-    unlockAudio();
-
     setRemaining(minutes * 60);
     setRunning(true);
     setPaused(false);
     startTimeRef.current = Date.now();
     pausedAtRef.current = null;
 
+    /** ユーザー操作内で NoSleep ON */
     noSleepRef.current?.enable();
   };
 
@@ -88,6 +72,8 @@ const Timer = ({ onFinish }: TimerProps) => {
     if (!running) return;
     setPaused(true);
     pausedAtRef.current = Date.now();
+
+    /** 一時停止中も NoSleep は維持 */
   };
 
   const resume = () => {
@@ -99,6 +85,7 @@ const Timer = ({ onFinish }: TimerProps) => {
     setPaused(false);
     pausedAtRef.current = null;
 
+    /** 再開時も念のため ON */
     noSleepRef.current?.enable();
   };
 
@@ -109,8 +96,13 @@ const Timer = ({ onFinish }: TimerProps) => {
     startTimeRef.current = null;
     pausedAtRef.current = null;
 
+    /** 明示終了時は NoSleep OFF */
     noSleepRef.current?.disable();
   };
+
+  /* =========================
+     表示用
+     ========================= */
 
   const format = (sec: number) => {
     const m = Math.floor(sec / 60);
