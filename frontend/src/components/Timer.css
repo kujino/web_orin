@@ -1,0 +1,93 @@
+/* 設定エリア */
+.timer-label {
+  margin-bottom: 6px;
+  display: block;
+}
+
+.timer-select {
+  width: 100%;
+  padding: 8px 36px 8px 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #cfcac2;
+  background-color: #f7f6f4;
+  color: #333;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.timer-select:focus {
+  outline: none;
+  border-color: #8a857d;
+  box-shadow: 0 0 0 2px rgba(138, 133, 125, 0.2);
+}
+
+.timer-select:disabled {
+  background-color: #e6e4df;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.timer-select-wrapper {
+  position: relative;
+}
+
+.timer-select-wrapper::after {
+  content: "▼";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  color: #666;
+  pointer-events: none;
+}
+
+
+/* 残り時間 */
+.timer-remaining {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin: 18px;
+}
+
+/* ボタンエリア */
+.timer-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.timer-button {
+  padding: 8px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #cfcac2;
+  background-color: #f4f3f1;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease,
+    transform 0.05s ease;
+}
+
+.timer-button:hover {
+  background-color: #eceae6;
+}
+
+.timer-button:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+
+/* 状態別（あとで使える） */
+.timer-running {
+  opacity: 1;
+}
+
+.timer-paused {
+  opacity: 0.7;
+}
