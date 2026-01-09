@@ -114,7 +114,7 @@ const Timer = ({ onFinish }: TimerProps) => {
       <h3>Timer</h3>
 
       <p>
-        ※ iOSの場合、最初に一度お鈴を鳴らしてからご利用ください
+        ※ iOS非推奨
       </p>
 
       <label className="timer-label">
