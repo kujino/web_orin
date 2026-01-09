@@ -1,4 +1,8 @@
-/* 設定エリア */
+.timer p {
+  font-size: 12px;
+  color: #666;
+}
+
 .timer-label {
   margin-bottom: 6px;
   display: block;
