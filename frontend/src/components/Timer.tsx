@@ -16,7 +16,7 @@ const Timer = ({ onFinish }: TimerProps) => {
   const pausedAtRef = useRef<number | null>(null);
 
   /* =========================
-     NoSleep
+     NoSleep（1インスタンス）
      ========================= */
   const noSleepRef = useRef<NoSleep | null>(null);
   if (!noSleepRef.current) {
@@ -24,32 +24,47 @@ const Timer = ({ onFinish }: TimerProps) => {
   }
 
   /* =========================
-     Audio（iOS Unlock 用）
+     Audio（iOS対策）
+     - unlock用（無音）
+     - 再生用（実音）
      ========================= */
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const unlockAudioRef = useRef<HTMLAudioElement | null>(null);
+  const bellAudioRef = useRef<HTMLAudioElement | null>(null);
   const audioUnlockedRef = useRef(false);
 
+  /** iOS Safari 用：ユーザー操作内で一度だけ“無音再生”して解錠 */
   const unlockAudio = () => {
     if (audioUnlockedRef.current) return;
 
-    if (!audioRef.current) {
-      audioRef.current = new Audio("/orin-sound.mp3");
+    if (!unlockAudioRef.current) {
+      unlockAudioRef.current = new Audio("/orin-sound.mp3");
+      unlockAudioRef.current.volume = 0; // ★ muted より安全
     }
 
-    // iOS 対策：muted 再生で許可を取る
-    audioRef.current.muted = true;
-
-    audioRef.current
+    unlockAudioRef.current
       .play()
       .then(() => {
-        audioRef.current?.pause();
-        audioRef.current!.currentTime = 0;
-        audioRef.current!.muted = false;
+        unlockAudioRef.current?.pause();
+        unlockAudioRef.current!.currentTime = 0;
         audioUnlockedRef.current = true;
       })
-      .catch(() => {});
+      .catch(() => {
+        // 失敗してもOK（iOSでは起きうる）
+      });
   };
 
+  /** 実際に鳴らす（終了時のみ） */
+  const playBell = () => {
+    if (!bellAudioRef.current) {
+      bellAudioRef.current = new Audio("/orin-sound.mp3");
+    }
+    bellAudioRef.current.currentTime = 0;
+    bellAudioRef.current.play().catch(() => {});
+  };
+
+  /* =========================
+     タイマー進行
+     ========================= */
   useEffect(() => {
     if (!running || paused) return;
 
@@ -59,7 +74,6 @@ const Timer = ({ onFinish }: TimerProps) => {
       const elapsed = Math.floor(
         (Date.now() - startTimeRef.current) / 1000
       );
-
       const next = minutes * 60 - elapsed;
 
       if (next <= 0) {
@@ -70,8 +84,8 @@ const Timer = ({ onFinish }: TimerProps) => {
         startTimeRef.current = null;
         pausedAtRef.current = null;
 
-        // 🔔 音を鳴らす
-        audioRef.current?.play();
+        // 🔔 終了時のみ鳴らす
+        playBell();
 
         // 💤 スリープ解除
         noSleepRef.current?.disable();
@@ -88,9 +102,8 @@ const Timer = ({ onFinish }: TimerProps) => {
   /* =========================
      操作系
      ========================= */
-
   const start = () => {
-    // ★ ユーザー操作内で必ず呼ぶ
+    // ★ 必ずユーザー操作内で
     unlockAudio();
 
     setRemaining(minutes * 60);
@@ -106,7 +119,7 @@ const Timer = ({ onFinish }: TimerProps) => {
     if (!running) return;
     setPaused(true);
     pausedAtRef.current = Date.now();
-    // NoSleep は維持
+    // NoSleep は維持（スリープさせない）
   };
 
   const resume = () => {
@@ -131,6 +144,9 @@ const Timer = ({ onFinish }: TimerProps) => {
     noSleepRef.current?.disable();
   };
 
+  /* =========================
+     表示
+     ========================= */
   const format = (sec: number) => {
     const m = Math.floor(sec / 60);
     const s = sec % 60;
