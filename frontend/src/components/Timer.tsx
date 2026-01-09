@@ -15,11 +15,40 @@ const Timer = ({ onFinish }: TimerProps) => {
   const startTimeRef = useRef<number | null>(null);
   const pausedAtRef = useRef<number | null>(null);
 
-  /** NoSleep インスタンス（1つだけ） */
+  /* =========================
+     NoSleep
+     ========================= */
   const noSleepRef = useRef<NoSleep | null>(null);
   if (!noSleepRef.current) {
     noSleepRef.current = new NoSleep();
   }
+
+  /* =========================
+     Audio（iOS Unlock 用）
+     ========================= */
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioUnlockedRef = useRef(false);
+
+  const unlockAudio = () => {
+    if (audioUnlockedRef.current) return;
+
+    if (!audioRef.current) {
+      audioRef.current = new Audio("/orin-sound.mp3");
+    }
+
+    // iOS 対策：muted 再生で許可を取る
+    audioRef.current.muted = true;
+
+    audioRef.current
+      .play()
+      .then(() => {
+        audioRef.current?.pause();
+        audioRef.current!.currentTime = 0;
+        audioRef.current!.muted = false;
+        audioUnlockedRef.current = true;
+      })
+      .catch(() => {});
+  };
 
   useEffect(() => {
     if (!running || paused) return;
@@ -41,7 +70,10 @@ const Timer = ({ onFinish }: TimerProps) => {
         startTimeRef.current = null;
         pausedAtRef.current = null;
 
-        /** ⏱ 完走時は NoSleep OFF */
+        // 🔔 音を鳴らす
+        audioRef.current?.play();
+
+        // 💤 スリープ解除
         noSleepRef.current?.disable();
 
         onFinish?.();
@@ -58,13 +90,15 @@ const Timer = ({ onFinish }: TimerProps) => {
      ========================= */
 
   const start = () => {
+    // ★ ユーザー操作内で必ず呼ぶ
+    unlockAudio();
+
     setRemaining(minutes * 60);
     setRunning(true);
     setPaused(false);
     startTimeRef.current = Date.now();
     pausedAtRef.current = null;
 
-    /** ユーザー操作内で NoSleep ON */
     noSleepRef.current?.enable();
   };
 
@@ -72,8 +106,7 @@ const Timer = ({ onFinish }: TimerProps) => {
     if (!running) return;
     setPaused(true);
     pausedAtRef.current = Date.now();
-
-    /** 一時停止中も NoSleep は維持 */
+    // NoSleep は維持
   };
 
   const resume = () => {
@@ -85,7 +118,6 @@ const Timer = ({ onFinish }: TimerProps) => {
     setPaused(false);
     pausedAtRef.current = null;
 
-    /** 再開時も念のため ON */
     noSleepRef.current?.enable();
   };
 
@@ -96,13 +128,8 @@ const Timer = ({ onFinish }: TimerProps) => {
     startTimeRef.current = null;
     pausedAtRef.current = null;
 
-    /** 明示終了時は NoSleep OFF */
     noSleepRef.current?.disable();
   };
-
-  /* =========================
-     表示用
-     ========================= */
 
   const format = (sec: number) => {
     const m = Math.floor(sec / 60);
