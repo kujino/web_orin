@@ -14,36 +14,34 @@ const Timer = ({ onFinish }: TimerProps) => {
   const startTimeRef = useRef<number | null>(null);
   const pausedAtRef = useRef<number | null>(null);
 
-  /** 🔔 Audio 用 */
+  /* =========================
+     Audio（iOS 安定構成）
+     ========================= */
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUnlockedRef = useRef(false);
 
-  /** iOS Safari 用：ユーザー操作内で音を解錠 */
+  /** ユーザー操作内で一度だけ「無音再生」 */
   const unlockAudio = () => {
     if (audioUnlockedRef.current) return;
 
     if (!audioRef.current) {
       audioRef.current = new Audio("/orin-sound.mp3");
+      audioRef.current.volume = 0; // ★ muted は使わない
     }
-
-    // iOS は muted 再生だと通りやすい
-    audioRef.current.muted = true;
 
     audioRef.current
       .play()
       .then(() => {
         audioRef.current?.pause();
-        if (audioRef.current) {
-          audioRef.current.currentTime = 0;
-          audioRef.current.muted = false;
-        }
+        audioRef.current!.currentTime = 0;
         audioUnlockedRef.current = true;
       })
-      .catch(() => {
-        // 失敗してもOK（iOSではよくある）
-      });
+      .catch(() => {});
   };
 
+  /* =========================
+     タイマー処理
+     ========================= */
   useEffect(() => {
     if (!running || paused) return;
 
@@ -53,7 +51,6 @@ const Timer = ({ onFinish }: TimerProps) => {
       const elapsed = Math.floor(
         (Date.now() - startTimeRef.current) / 1000
       );
-
       const next = minutes * 60 - elapsed;
 
       if (next <= 0) {
@@ -64,8 +61,12 @@ const Timer = ({ onFinish }: TimerProps) => {
         startTimeRef.current = null;
         pausedAtRef.current = null;
 
-        /** 🔔 タイマー終了時に鳴らす */
-        audioRef.current?.play();
+        // 🔔 終了時だけ音を出す
+        if (audioRef.current) {
+          audioRef.current.volume = 1;
+          audioRef.current.currentTime = 0;
+          audioRef.current.play().catch(() => {});
+        }
 
         onFinish?.();
       } else {
@@ -76,9 +77,11 @@ const Timer = ({ onFinish }: TimerProps) => {
     return () => clearInterval(id);
   }, [running, paused, minutes, onFinish]);
 
+  /* =========================
+     操作系
+     ========================= */
   const start = () => {
-    /** ★ 必ずユーザー操作内で呼ぶ */
-    unlockAudio();
+    unlockAudio(); // ★ 開始時はここだけ
 
     setRemaining(minutes * 60);
     setRunning(true);
@@ -121,7 +124,7 @@ const Timer = ({ onFinish }: TimerProps) => {
     <div className="timer">
       <h3>Timer</h3>
 
-      <p>
+      <p className="timer-notice">
         ※ タイマー使用中は画面を表示したままにしてください
       </p>
 
