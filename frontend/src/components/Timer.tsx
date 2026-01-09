@@ -14,13 +14,9 @@ const Timer = ({ onFinish }: TimerProps) => {
   const startTimeRef = useRef<number | null>(null);
   const pausedAtRef = useRef<number | null>(null);
 
-  /* =========================
-     Audio（iOS 安定構成）
-     ========================= */
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUnlockedRef = useRef(false);
 
-  /** ユーザー操作内で一度だけ「無音再生」 */
   const unlockAudio = () => {
     if (audioUnlockedRef.current) return;
 
@@ -39,9 +35,6 @@ const Timer = ({ onFinish }: TimerProps) => {
       .catch(() => {});
   };
 
-  /* =========================
-     タイマー処理
-     ========================= */
   useEffect(() => {
     if (!running || paused) return;
 
@@ -61,7 +54,6 @@ const Timer = ({ onFinish }: TimerProps) => {
         startTimeRef.current = null;
         pausedAtRef.current = null;
 
-        // 🔔 終了時だけ音を出す
         if (audioRef.current) {
           audioRef.current.volume = 1;
           audioRef.current.currentTime = 0;
@@ -77,11 +69,8 @@ const Timer = ({ onFinish }: TimerProps) => {
     return () => clearInterval(id);
   }, [running, paused, minutes, onFinish]);
 
-  /* =========================
-     操作系
-     ========================= */
   const start = () => {
-    unlockAudio(); // ★ 開始時はここだけ
+    unlockAudio();
 
     setRemaining(minutes * 60);
     setRunning(true);
@@ -124,8 +113,8 @@ const Timer = ({ onFinish }: TimerProps) => {
     <div className="timer">
       <h3>Timer</h3>
 
-      <p className="timer-notice">
-        ※ タイマー使用中は画面を表示したままにしてください
+      <p>
+        ※ iOSの場合、最初に一度お鈴を鳴らしてからご利用ください
       </p>
 
       <label className="timer-label">
